@@ -2,7 +2,7 @@ import unittest
 from pyspark import SparkContext
 
 
-class PySparkTestCase(unittest.TestCase):
+class SpylearnTestCase(unittest.TestCase):
     def setUp(self):
         class_name = self.__class__.__name__
         self.sc = SparkContext('local', class_name)
