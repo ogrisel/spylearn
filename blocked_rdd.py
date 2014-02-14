@@ -32,7 +32,7 @@ def block_array(iterator, block_size=None):
     yield np.array(arrays)
 
 
-def block_dataframe(iterator, book_size=None):
+def block_dataframe(iterator, block_size=None):
     i = 0
     rows = []
     for d in iterator:
