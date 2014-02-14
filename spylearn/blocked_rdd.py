@@ -9,7 +9,7 @@ def block_tuple(iterator, block_size=None):
     for tuple_i in iterator:
         if blocked_tuple is None:
             blocked_tuple = tuple([] for _ in range(len(tuple_i)))
-            
+
         if block_size is not None and i > block_size:
             yield tuple(np.array(x) for x in blocked_tuple)
             blocked_tuple = tuple([] for _ in range(len(tuple_i)))
@@ -42,4 +42,3 @@ def block_dataframe(iterator, block_size=None):
         rows.append(d)
         i += 1
     yield pd.DataFrame(rows)
-
