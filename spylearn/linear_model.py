@@ -3,7 +3,7 @@
 
 def _train(iterator, model, classes):
     for X, y in iterator:
-        model.partial_fit(X, y, classes=classes))
+        model.partial_fit(X, y, classes=classes)
     yield model, 1
 
 
