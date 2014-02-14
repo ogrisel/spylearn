@@ -20,25 +20,14 @@ def _block_tuple(iterator, block_size=None):
     yield tuple(np.array(x) for x in blocked_tuple)
 
 
-def _block_array(iterator, block_size=None):
+def _block_collection(iterator, collection_type, block_size=None):
     i = 0
-    arrays = []
+    accumulated = []
     for a in iterator:
         if block_size is not None and i > block_size:
-            yield np.array(arrays)
-            arrays = []
-        arrays.append(a)
+            yield collection_type(accumulated)
+            accumulated = []
+        accumulated.append(a)
         i += 1
-    yield np.array(arrays)
+    yield collection_type(accumulated)
 
-
-def _block_dataframe(iterator, block_size=None):
-    i = 0
-    rows = []
-    for d in iterator:
-        if block_size is not None and i > block_size:
-            yield pd.DataFrame(rows)
-            rows = []
-        rows.append(d)
-        i += 1
-    yield pd.DataFrame(rows)
