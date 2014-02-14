@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def block_tuple(iterator, block_size=None):
+def _block_tuple(iterator, block_size=None):
     i = 0
     tuple_size = None
     blocked_tuple = None
@@ -20,7 +20,7 @@ def block_tuple(iterator, block_size=None):
     yield tuple(np.array(x) for x in blocked_tuple)
 
 
-def block_array(iterator, block_size=None):
+def _block_array(iterator, block_size=None):
     i = 0
     arrays = []
     for a in iterator:
@@ -32,7 +32,7 @@ def block_array(iterator, block_size=None):
     yield np.array(arrays)
 
 
-def block_dataframe(iterator, block_size=None):
+def _block_dataframe(iterator, block_size=None):
     i = 0
     rows = []
     for d in iterator:
