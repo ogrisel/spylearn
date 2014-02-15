@@ -1,9 +1,11 @@
-from common import SpylearnTestCase
 import shutil
 import tempfile
+import numpy as np
+
+from common import SpylearnTestCase
 
 from spylearn.block_rdd import block_rdd
-import numpy as np
+from numpy.testing import assert_array_almost_equal
 
 
 class TestUtils(SpylearnTestCase):
@@ -24,7 +26,7 @@ class TestBlockRDD(TestUtils):
     def test_block_rdd_array(self):
         data = self.sc.parallelize([np.array([1]) for i in range(0, 100)], 10)
         blocked_data = block_rdd(data)
-        assert(np.allclose(np.ones((10, 1)), blocked_data.first()))
+        assert_array_almost_equal(np.ones((10, 1)), blocked_data.first())
 
     def test_block_rdd_dict(self):
         pass
