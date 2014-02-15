@@ -104,4 +104,14 @@ class TestBlockRDD(TestUtils):
         assert_equal(len(blocks), 0)
 
     def test_block_rdd_dict(self):
-        pass
+        n_partitions = 3
+        n_samples = 57
+        dicts = [{'a': i, 'b': float(i) ** 2} for i in range(n_samples)]
+        data = self.sc.parallelize(dicts, n_partitions)
+
+        block_data_5 = block_rdd(data, block_size=5)
+        blocks = block_data_5.collect()
+        assert_true(all(len(b) <= 5 for b in blocks))
+        assert_array_almost_equal(blocks[0].a, np.arange(5))
+        assert_array_almost_equal(blocks[0].b,
+                                  np.arange(5, dtype=np.float) ** 2)
