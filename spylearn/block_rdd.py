@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.sparse as sp
 
 
 def block_rdd(data, block_size=None):
@@ -29,8 +30,15 @@ def block_rdd(data, block_size=None):
     return data
 
 
-def _block_tuple(iterator, block_size=None):
+def _pack_accumulated(accumulated):
+    if len(accumulated) > 0 and sp.issparse(accumulated[0]):
+        return sp.vstack(accumulated)
+    else:
+        return np.array(accumulated)
 
+
+def _block_tuple(iterator, block_size=None):
+    """Pack rdd of tuples as tuples of arrays or scipy.sparse matrices"""
     i = 0
     tuple_size = None
     blocked_tuple = None
@@ -39,13 +47,13 @@ def _block_tuple(iterator, block_size=None):
             blocked_tuple = tuple([] for _ in range(len(tuple_i)))
 
         if block_size is not None and i >= block_size:
-            yield tuple(np.array(x) for x in blocked_tuple)
+            yield tuple(_pack_accumulated(x) for x in blocked_tuple)
             blocked_tuple = tuple([] for _ in range(len(tuple_i)))
             i = 0
         for x_j, x in zip(tuple_i, blocked_tuple):
             x.append(x_j)
         i += 1
-    yield tuple(np.array(x) for x in blocked_tuple)
+    yield tuple(_pack_accumulated(x) for x in blocked_tuple)
 
 
 def _block_collection(iterator, collection_type, block_size=None):

@@ -1,6 +1,7 @@
 import shutil
 import tempfile
 import numpy as np
+import scipy.sparse as sp
 
 from common import SpylearnTestCase
 
@@ -26,17 +27,21 @@ class TestBlockRDD(TestUtils):
     def test_block_rdd_tuple(self):
         n_partitions = 10
         n_samples = 100
+        sparse_row = sp.csr_matrix([[0, 0, 1, 0, 1]])
         data = self.sc.parallelize(
-            [(np.array([1., 2.]), 0)  for i in range(n_samples)],
+            [(np.array([1., 2.]), 0, sparse_row) for i in range(n_samples)],
             n_partitions)
         blocked_data = block_rdd(data)
 
         expected_first_block = np.array([[1., 2.]] * 10)
         expected_second_block = np.zeros(10, dtype=np.int)
+        expected_third_block = sp.vstack([sparse_row] * 10)
 
         first_block_tuple = blocked_data.first()
         assert_array_almost_equal(expected_first_block, first_block_tuple[0])
         assert_array_almost_equal(expected_second_block, first_block_tuple[1])
+        assert_array_almost_equal(expected_third_block.toarray(),
+                                  first_block_tuple[2].toarray())
 
         tuple_blocks = blocked_data.collect()
         assert_equal(len(tuple_blocks), n_partitions)
