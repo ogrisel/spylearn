@@ -10,8 +10,11 @@ def block_rdd(data, block_size=None):
     """
 
     import pandas as pd
-
-    entry = data.first()
+    try:
+        entry = data.first()
+    except IndexError:
+        # empty RDD: do not block
+        return data
 
     # do different kinds of block depending on the type
     if type(entry) is tuple:

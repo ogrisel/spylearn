@@ -62,5 +62,10 @@ class TestBlockRDD(TestUtils):
         blocks = block_data_10.collect()
         assert_true(all(len(b) <= 10 for b in blocks))
 
+    def test_block_empty_rdd(self):
+        n_partitions = 3
+        empty_data = self.sc.parallelize([], n_partitions)
+        blocks = block_rdd(empty_data).collect()
+
     def test_block_rdd_dict(self):
         pass
