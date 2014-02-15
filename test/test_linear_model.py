@@ -1,6 +1,5 @@
 import numpy as np
 
-from sklearn.datasets import make_classification
 from sklearn.linear_model import SGDClassifier
 
 from spylearn.linear_model import parallel_train
@@ -33,8 +32,10 @@ class LinearModelTestCase(SpylearnTestCase):
     def setUp(self):
         super(LinearModelTestCase, self).setUp()
         if self.data is None:
-            X, y = make_classification(n_samples=int(1e3), n_features=50,
-                                       random_state=2)
+            rng = np.random.RandomState(42)
+            X = rng.normal(size=(int(1e3), 50))
+            coef = rng.normal(size=50)
+            y = (np.dot(X, coef) > 0.01).astype(np.int)
             self.X = X
             self.y = y
             self.classes = np.unique(y)
@@ -49,6 +50,6 @@ class LinearModelTestCase(SpylearnTestCase):
         assert_array_almost_equal(model.coef_, expected_coef , 5)
 
     def test_parallel_train(self):
-        model = parallel_train(SGDClassifier(random_state=1),
-                               self.blocked_data, self.classes)
-        assert_greater(model.score(self.X, self.y), 0.85)
+        model = SGDClassifier(loss='log', alpha=1e-5, random_state=1)
+        model = parallel_train(model, self.blocked_data, self.classes)
+        assert_greater(model.score(self.X, self.y), 0.90)
