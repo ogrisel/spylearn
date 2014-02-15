@@ -34,7 +34,7 @@ class LinearModelTestCase(SpylearnTestCase):
         super(LinearModelTestCase, self).setUp()
         if self.data is None:
             X, y = make_classification(n_samples=int(1e3), n_features=50,
-                                       n_informative=30, random_state=2)
+                                       random_state=2)
             self.X = X
             self.y = y
             self.classes = np.unique(y)
@@ -51,4 +51,4 @@ class LinearModelTestCase(SpylearnTestCase):
     def test_parallel_train(self):
         model = parallel_train(SGDClassifier(random_state=1),
                                self.blocked_data, self.classes)
-        assert_greater(model.score(self.X, self.y), 0.70)
+        assert_greater(model.score(self.X, self.y), 0.85)
