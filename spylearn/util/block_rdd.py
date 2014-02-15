@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def block_data(data, block_size=None):
+def block_rdd(data, block_size=None):
     """Block an RDD
 
     :param data: RDD of data points
