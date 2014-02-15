@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.linear_model import SGDClassifier
 
 from spylearn.linear_model import parallel_train
-from spylearn.util.block_rdd import block_rdd
+from spylearn.block_rdd import block_rdd
 
 from common import SpylearnTestCase
 
