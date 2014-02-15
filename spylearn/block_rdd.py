@@ -43,7 +43,7 @@ def _pack_accumulated(accumulated):
 
 
 def _block_tuple(iterator, block_size=None):
-    """Pack rdd of tuples as tuples of arrays or scipy.sparse matrices"""
+    """Pack rdd of tuples as tuples of arrays or scipy.sparse matrices."""
     i = 0
     blocked_tuple = None
     for tuple_i in iterator:
@@ -61,7 +61,7 @@ def _block_tuple(iterator, block_size=None):
 
 
 def _block_collection(iterator, collection_type, block_size=None):
-
+    """Pack rdd with a specific collection constructor."""
     i = 0
     accumulated = []
     for a in iterator:
