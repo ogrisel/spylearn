@@ -24,7 +24,24 @@ class TestUtils(SpylearnTestCase):
 class TestBlockRDD(TestUtils):
 
     def test_block_rdd_tuple(self):
-        pass
+        n_partitions = 10
+        n_samples = 100
+        data = self.sc.parallelize(
+            [(np.array([1., 2.]), 0)  for i in range(n_samples)],
+            n_partitions)
+        blocked_data = block_rdd(data)
+
+        expected_first_block = np.array([[1., 2.]] * 10)
+        expected_second_block = np.zeros(10, dtype=np.int)
+
+        first_block_tuple = blocked_data.first()
+        assert_array_almost_equal(expected_first_block, first_block_tuple[0])
+        assert_array_almost_equal(expected_second_block, first_block_tuple[1])
+
+        tuple_blocks = blocked_data.collect()
+        assert_equal(len(tuple_blocks), n_partitions)
+        assert_equal(sum(len(b[0]) for b in tuple_blocks),  n_samples)
+        assert_equal(sum(len(b[1]) for b in tuple_blocks),  n_samples)
 
     def test_block_rdd_array(self):
         n_partitions = 10
