@@ -4,6 +4,7 @@ from sklearn.datasets import make_classification
 from sklearn.linear_model import SGDClassifier
 
 from spylearn.linear_model import parallel_train
+from spylearn.util.block_rdd import block_rdd
 
 from common import SpylearnTestCase
 
@@ -39,9 +40,15 @@ class LinearModelTestCase(SpylearnTestCase):
             self.classes = np.unique(y)
             self.data = self.sc.parallelize(list(zip(X, y)),
                 numSlices=self.n_partitions).cache()
+            self.blocked_data = block_rdd(self.data, block_size=171)
 
     def test_parallel_train_sum_model_non_blocked(self):
         n_iter = 2
         model = parallel_train(SumModel(), self.data, self.classes, n_iter)
         expected_coef = self.X.sum(axis=0) * n_iter / self.n_partitions
         assert_array_almost_equal(model.coef_, expected_coef , 5)
+
+    def test_parallel_train(self):
+        model = parallel_train(SGDClassifier(random_state=1),
+                               self.blocked_data, self.classes)
+        assert_greater(model.score(self.X, self.y), 0.70)
