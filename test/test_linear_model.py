@@ -50,6 +50,6 @@ class LinearModelTestCase(SpylearnTestCase):
         assert_array_almost_equal(model.coef_, expected_coef , 5)
 
     def test_parallel_train(self):
-        model = SGDClassifier(loss='log', alpha=1e-5, random_state=1)
+        model = SGDClassifier(loss='log', alpha=1e-5)
         model = parallel_train(model, self.blocked_data, self.classes)
         assert_greater(model.score(self.X, self.y), 0.90)
