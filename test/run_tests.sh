@@ -6,4 +6,4 @@ if [ -z "$SPARK_HOME" ]; then
 fi
 
 export PYTHONPATH=$PYTHONPATH:$SPARK_HOME/python:../
-nosetests
+nosetests $@

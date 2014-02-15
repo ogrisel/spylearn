@@ -15,9 +15,10 @@ def _model_sum(m_1, m_2):
     return model_1, count_1 + count_2
 
 
-def parallel_train(model, data, classes):
-    models = data.mapPartitions(lambda x: _train(x, model))
-    model, count = models.reduce(_model_sum)
-    model.coef_ /= count
-    model.intercept_ /= count
+def parallel_train(model, data, classes=None, n_iter=10):
+    for i in range(n_iter):
+        models = data.mapPartitions(lambda x: _train(x, model, classes))
+        model, count = models.reduce(_model_sum)
+        model.coef_ /= count
+        model.intercept_ /= count
     return model
