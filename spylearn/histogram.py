@@ -30,5 +30,3 @@ def histogram(rdd, range=None, bins=10):
     raise TypeError("bins required to be an int or iterable")
 
   return (rdd.flatMap(lambda x: _bin(x, bin_edges)).countByValue(), bin_edges)
-
-~                                                                                 
