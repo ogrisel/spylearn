@@ -2,7 +2,7 @@ from common import SpylearnTestCase
 import shutil
 import tempfile
 
-from spylearn.util.block_rdd import block_rdd
+from spylearn.block_rdd import block_rdd
 import numpy as np
 
 
