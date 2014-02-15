@@ -48,6 +48,19 @@ class TestBlockRDD(TestUtils):
         assert_equal(sum(len(b[0]) for b in tuple_blocks),  n_samples)
         assert_equal(sum(len(b[1]) for b in tuple_blocks),  n_samples)
 
+    def test_block_rdd_sp_matrix(self):
+        n_partitions = 10
+        n_samples = 100
+        sparse_row = sp.csr_matrix([[0, 0, 1, 0, 1]])
+        data = self.sc.parallelize([sparse_row for i in range(n_samples)],
+            n_partitions)
+        blocked_data = block_rdd(data)
+        assert_true(sp.issparse(blocked_data.first()))
+
+        expected_block = sp.vstack([sparse_row] * 10)
+        assert_array_almost_equal(expected_block.toarray(),
+                                  blocked_data.first().toarray())
+
     def test_block_rdd_array(self):
         n_partitions = 10
         n_samples = 100

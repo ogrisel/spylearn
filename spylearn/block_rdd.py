@@ -18,16 +18,21 @@ def block_rdd(data, block_size=None):
         return data
 
     # do different kinds of block depending on the type
-    if type(entry) is tuple:
-        data = data.mapPartitions(_block_tuple, block_size)
+    if isinstance(entry, tuple):
+        return data.mapPartitions(_block_tuple, block_size)
 
-    if type(entry) is np.ndarray:
-        data = data.mapPartitions(lambda x: _block_collection(x, np.array, block_size))
+    elif isinstance(entry, dict):
+        return data.mapPartitions(
+            lambda x: _block_collection(x, pd.DataFrame, block_size))
 
-    if type(entry) is dict:
-        data = data.mapPartitions(lambda x: _block_collection(x, pd.DataFrame, block_size))
+    elif sp.issparse(entry):
+        return data.mapPartitions(
+            lambda x: _block_collection(x, sp.vstack, block_size))
 
-    return data
+    else:
+        # Fallback to array packing
+        return data.mapPartitions(
+            lambda x: _block_collection(x, np.array, block_size))
 
 
 def _pack_accumulated(accumulated):
