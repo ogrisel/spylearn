@@ -8,6 +8,7 @@ from spylearn.util.block_rdd import block_rdd
 from common import SpylearnTestCase
 
 from nose.tools import assert_greater
+from nose import SkipTest
 from numpy.testing import assert_array_almost_equal
 
 
@@ -50,6 +51,8 @@ class LinearModelTestCase(SpylearnTestCase):
         assert_array_almost_equal(model.coef_, expected_coef , 5)
 
     def test_parallel_train(self):
-        model = SGDClassifier(loss='log', alpha=1e-5)
+        if not hasattr(SGDClassifier, 'partial_fit'):
+            raise SkipTest('sklearn >= 0.13 is required to run this test')
+        model = SGDClassifier(loss='log', alpha=1e-5, random_state=2)
         model = parallel_train(model, self.blocked_data, self.classes)
         assert_greater(model.score(self.X, self.y), 0.90)
