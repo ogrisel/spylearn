@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def block_data(data, block_size=None):
     """Block an RDD
 
@@ -7,10 +10,10 @@ def block_data(data, block_size=None):
     """
 
     import pandas as pd
-    import numpy as np
 
     entry = data.first()
 
+    # do different kinds of block depending on the type
     if type(entry) is tuple:
         data = data.mapPartitions(_block_tuple, block_size)
 
@@ -24,8 +27,6 @@ def block_data(data, block_size=None):
 
 
 def _block_tuple(iterator, block_size=None):
-
-    import numpy as np
 
     i = 0
     tuple_size = None
