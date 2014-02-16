@@ -45,7 +45,6 @@ def _pack_accumulated(accumulated):
 def _block_tuple(iterator, block_size=None):
     """Pack rdd of tuples as tuples of arrays or scipy.sparse matrices"""
     i = 0
-    tuple_size = None
     blocked_tuple = None
     for tuple_i in iterator:
         if blocked_tuple is None:
