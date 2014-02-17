@@ -5,9 +5,19 @@ import scipy.sparse as sp
 def block_rdd(data, block_size=None):
     """Block an RDD
 
-    :param data: RDD of data points
-    :param block_size: Size of blocks in new RDD
-    :return data: RDD of blocks
+    Parameters
+    ----------
+
+    data : RDD
+        RDD of data points to block into either numpy arrays,
+        scipy sparse matrices, or pandas data frames.
+        Type of data point will be automatically inferred
+        and blocked accordingly.
+
+    block_size : int, optional, default None
+        Size of each block (number of elements), if None all data points
+        from each partition will be combined in a block.
+
     """
 
     import pandas as pd
