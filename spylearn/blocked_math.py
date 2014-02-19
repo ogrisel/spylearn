@@ -86,7 +86,7 @@ def svd(blocked_rdd, k):
     return u, s, v
 
 
-def svd_em(blocked_rdd, k, maxiter=20, tol=1e-5):
+def svd_em(blocked_rdd, k, maxiter=20, tol=1e-5, seed=None):
     """
     Calculate the SVD of a blocked RDD using an expectation maximization
     algorithm (from Roweis, NIPS, 1997) that avoids explicitly
@@ -109,6 +109,9 @@ def svd_em(blocked_rdd, k, maxiter=20, tol=1e-5):
     tol : Double, optional, default = 1e-5
         Tolerance for stopping iterative updates
 
+    seed : Int, optional, default = None
+        Seed for random number generator for initializing subspace
+
     Returns
     ----------
 
@@ -126,7 +129,11 @@ def svd_em(blocked_rdd, k, maxiter=20, tol=1e-5):
     def outerprod(x):
         return x.T.dot(x)
 
-    c = np.random.randn(k, m)
+    if seed is not None:
+        rng = np.random.RandomState(seed)
+        c = rng.randn(k, m)
+    else:
+        c = np.random.randn(k, m)
     iter = 0
     error = 100
 
@@ -134,7 +141,6 @@ def svd_em(blocked_rdd, k, maxiter=20, tol=1e-5):
     # e-step: x = (cc')^-1 c y
     # m-step: c = y x' (xx')^-1
     while (iter < maxiter) & (error > tol):
-        print(iter)
         c_old = c
         # pre compute (cc')^-1 c
         c_inv = np.dot(c.T, ln.inv(np.dot(c, c.T)))

@@ -60,7 +60,7 @@ class TestBlockedMath(TestUtils):
         rng = np.random.RandomState(42)
         mat = rng.randn(10, 3)
         data = block_rdd(self.sc.parallelize(list(mat), 2)).cache()
-        u, s, v = svd_em(data, 1)
+        u, s, v = svd_em(data, 1, seed=42)
         u = np.squeeze(np.concatenate(np.array(u.collect()))).T
         u_true, s_true, v_true = ln.svd(mat)
         tol = 1
